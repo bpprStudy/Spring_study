@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 기본 생성자를 통해서 미리 Container에 객체를 만들어서 올려둔다.  -->
+	<!-- scope="prototype" - 빈을 요청할 때 마다 새로운 인스턴스 생성 default는 singletone -->
+	<bean class="com.ssafy.di.Desktop" id="desktop" scope="prototype"></bean>
+	<bean class="com.ssafy.di.Programmer" id="programmer"></bean>
+	
+</beans>

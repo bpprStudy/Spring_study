@@ -53,10 +53,8 @@ public class test {
 	public static void main(String[] args) {
 		Desktop computer = new Desktop();
 		Laptop computer2 = new Laptop();
-		Programmer p = new Programmer(computer);	// 제어의 역전
-		Programmer p2 = new Programmer(computer2);	// 제어의 역전
+		Programmer p = new Programmer(computer2);	// 제어의 역전
 		p.coding();
-		p2.coding();
 	}
 }
 ```
@@ -109,3 +107,83 @@ public class test {
 	}
 }
 ```
+
+## Spring Container Build
+### Spring IoC Container
+- 스프링에서 핵심적인 역할을 하는 객체를 Bean이라고 하며,
+- Container는 Bean의 인스턴스화 조립, 관리의 역할, 사용 소멸에 대한 처리를 담당한다.
+
+### Spring Container 빌드
+- Project를 Maven Project로 변경
+- pom.xml -> Spring Context 의존성 추가
+```xml
+<!-- pom.xml -->
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.18</version>
+		</dependency>
+	</dependencies>
+```
+- Source Folder 생성 (resources)
+- 스프링 설정 파일(Spring Bean Configuration File) 생성 (applicationContext)
+- Bean 등록 (플패키지 명 작성)
+```xml
+<!-- resources/applicationContext.xml -->
+
+	<!-- 기본 생성자를 통해서 미리 Container에 객체를 만들어서 올려둔다.  -->
+	<bean class="com.ssafy.di.Desktop" id="desktop" ></bean>
+	<bean class="com.ssafy.di.Programmer" id="programmer"></bean>
+```
+- 스프링 컨테이너를 이용하여 객체 가져오기
+```java
+public class Test {
+	public static void main(String[] args) {
+
+		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+
+		Programmer p = (Programmer) context.getBean("programmer");
+		
+		Desktop desktop = context.getBean("desktop", Desktop.class);
+		
+		p.setComputer(desktop);
+		
+		p.coding();
+	}
+}
+```
+
+### getBean()으로 여러 객체 가져오기
+```java
+Desktop d1 = (Desktop) context.getBean("desktop");
+Desktop d2 = (Desktop) context.getBean("desktop");
+
+System.out.println(d1 == d2); // true (Bean Scope의 default가 singletone이어서)
+```
+```xml
+<!-- resources/applicationContext.xml -->
+
+	<!-- scope를 변경 -->
+	<bean class="com.ssafy.di.Desktop" id="desktop" scope="prototype"></bean>
+```
+```java
+Desktop d1 = (Desktop) context.getBean("desktop");
+Desktop d2 = (Desktop) context.getBean("desktop");
+
+System.out.println(d1 == d2); // false
+```
+
+
+### Bean Scope
+- Bean Scope를 통해 객체 범위를 제어할 수 있다.
+<br>
+
+|Scope|설명|
+|:--:|:--:|
+|singleton|`기본값`, Spring IoC 컨테이너에 대한 단일 객체 인스턴스|
+|prototype|빈을 요청할 때마다 새로운 인스턴스 생성|
+|request|HTTP Request 주기로 bean 인스턴스 생성|
+|session|HTTP Session 주기로 bean 인스턴스 생성|
