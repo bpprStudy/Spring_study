@@ -42,9 +42,9 @@
     out.print(A+"+"+B+"="+sum);
 %>
 ```
-    ```html
-    <text> 10+20=30 </text>
-    ```
+```html
+<text> 10+20=30 </text>
+```
 
 ### 선언부 (Declaration)
 - 멤버변수 선언이나 메서드를 선언하는 영역
